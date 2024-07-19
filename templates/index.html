@@ -3,13 +3,13 @@
 <head>
     <!-- Page title -->
     <title>News Summarizer</title>
-    
+
     <!--CSS links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css'>
-    
+
     <!-- Google fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
@@ -33,12 +33,12 @@
             <!-- Brand logo and name -->
             <img src="https://cdn-icons-png.flaticon.com/512/3208/3208892.png" alt="News Icon" width="32" height="32">
             <a class="navbar-brand" href="/">News Summarizer</a>
-            
+
             <!-- Navigation toggle for small screens -->
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- Navigation links -->
                 <ul class="navbar-nav mr-auto">
@@ -51,11 +51,11 @@
                 </ul>
                 <!-- Theme control buttons -->
                 <div id="navabar-buttons" class="btn-group" role="group" aria-label="Theme Buttons">
-                    
-                    <form method="get" action="/summarize">  <!-- Is this part correct? -->
+
+                    <form method="get" action="/summarize">
                         <button id="summarize-button" type="submit" class="btn waves-effect waves-light">Summarize</button>
                     </form>
-                
+
                     <button id="theme-toggle" class="btn waves-effect waves-light">Toggle Theme</button>
                     <button id="theme-light" class="btn waves-effect waves-light">Light Theme</button>
                     <button id="theme-dark" class="btn waves-effect waves-light">Dark Theme</button>
@@ -64,22 +64,30 @@
             </div>
         </div>
     </nav>
-    
+
     <!-- Content -->
     <div class="container" id="container">
         <!-- Page heading -->
         <h1 id="project-title" class="center-align">AI-Powered News Summarizer</h1>
-        <!-- Sort order selector -->
+        <!-- Sort order and category selector -->
         <form method="POST" action="/" style="z-index: 999; position: relative;">
             <select name="sortorder" style="width: 200px; height: 50px; color: black;">
                 <option value="" disabled selected>Choose order</option>
-                <option value="desc">Descending</option>
-                <option value="asc">Ascending</option>
+                <option value="desc" {% if request.form.get('sortorder') == 'desc' %}selected{% endif %}>Newest First</option>
+                <option value="asc" {% if request.form.get('sortorder') == 'asc' %}selected{% endif %}>Oldest First</option>
             </select>
-            <!-- Sort button-->
-            <input type="submit" value="Sort" class="btn waves-effect waves-light"/>
+
+            <select name="category" style="width: 200px; height: 50px; color: black;">
+                <option value="" disabled selected>Choose category</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category == selected_category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Apply button -->
+            <input type="submit" value="Apply" class="btn waves-effect waves-light"/>
         </form>
-        
+
         <!-- Article cards container -->
         <div class="my-custom-row">
             <!-- Iterating through each article row and creating cards for each -->
@@ -90,6 +98,7 @@
                         <div class="card-content">
                             <span id="article-title" class="card-title">{{ row['title'] }}</span>
                             <p style="text-align: right; font-style: italic;"><span class="formatted-date">{{ formatDateTime(row['date']) }}</span></p>
+                            <p id="article-category">Category: {{ row['category'] }}</p>
                             <p id="article-summary">Summary {{ row['summarized_content'] | safe }}</p><br>
                             <!-- <p id="article-content">Actual Content: {{ row['full_content'] | safe }}</p><br> -->
                             <p id="article-link">Link: <a href="{{ row['link'] }}" target="_blank">{{ row['link'] }}</a></p><br>
@@ -98,12 +107,13 @@
                     </div>
                 </div>
             </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 
     <!-- Additional JS libraries and custom script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script> 
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
