@@ -36,7 +36,7 @@ and add this
 API_KEY=YOUR-API-KEY
 
 
-Obtain a Cohere API key and replace "YOUR-API-KEY" in the code with your actual API key.
+Obtain a AI API key and replace "YOUR-API-KEY" in the code with your actual API key.
 
 Prepare an OPML file (e.g., "news_links.opml") with the RSS feed URLs you want to fetch articles from.
 Run the Flask application:
