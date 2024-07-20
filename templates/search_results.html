@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results - News Summarizer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Audiowide">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar-container" style="background-color: #343A40">
+        <!-- Brand logo and name -->
+        <img src="https://cdn-icons-png.flaticon.com/512/3208/3208892.png" alt="News Icon" width="32" height="32">
+        <a class="navbar-brand" href="/">News Summarizer</a>
+        <!-- Navigation toggle for small screens -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav" style="background-color: #343A40;">
+            <!-- Theme control buttons -->
+            <div id="navbar-buttons" class="btn-group" role="group" aria-label="Theme Buttons">
+                <form method="get" action="/summarize">
+                    <button id="summarize-button" type="submit" class="btn waves-effect waves-light">Summarize</button>
+                </form>
+            
+                <button id="theme-toggle" class="btn waves-effect waves-light">Toggle Theme</button>
+            </div>
+
+            <!-- Search form -->
+            <form class="form-inline ml-auto" style="align-items: center;display:flex;flex-flow:initial;" method="GET" action="/search">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" required>
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+    <div class="container" id="container">
+        <h1 id="project-title" class="center-align">Search Results for "{{ query }}"</h1>
+        <a href="/" class="btn btn-primary" style="color: #fff;background-color: #007bff; border-color: #007bff;">Back to Home</a>
+        <div class="my-custom-row">
+            {% if results %}
+                {% for result in results %}
+                <div class="col s12">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="card-content">
+                                <span id="article-title" class="card-title">{{ result['title'] }}</span>
+                                <p style="text-align: right; font-style: italic;"><span class="formatted-date">{{ formatDateTime(result['date']) }}</span></p>
+                                <p id="article-summary">Summary {{ result['summarized_content'] | safe }}</p><br>
+                                <p id="article-link">Link: <a href="{{ result['link'] }}" target="_blank">{{ result['link'] }}</a></p><br>
+                                <p id="article-author">By {{ result['author'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No results found for your search query.</p>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

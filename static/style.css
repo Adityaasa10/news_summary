@@ -6,7 +6,7 @@ body {
 /* 'project-title' id styles */
 #project-title {
     font-size: 56px;
-    font-family: 'Audiowide', sans-serif;
+    font-family: 'Sans', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Styles for all images */
@@ -81,6 +81,7 @@ body.custom-theme .container .card.horizontal {
 #container {
      width: 100%;
      padding-top: 70px;
+     
 }
 
 /* Navigation Bar Styles */
@@ -89,6 +90,7 @@ body.custom-theme .container .card.horizontal {
     color: #fff;
     position: fixed;
     width: 100%;
+    height: fit-content;
     top: 0;
     left: 0;
     z-index: 1000;
@@ -97,6 +99,9 @@ body.custom-theme .container .card.horizontal {
 
 .btn-group {
     color: #fff;
+    align-items: center;
+    display: flex;
+    width: fit-content;
 }
 
 /* Override Bootstrap styles for the custom row and its child elements */
@@ -126,7 +131,7 @@ body.custom-theme .container .card.horizontal {
 #theme-toggle, #theme-dark, #theme-light, #theme-custom, #summarize-button {
     color: white;
     border-color: #f7f7f7;
-    float: left;
+    float: right;
 }
 
 /* Styles for 'article-title' id */
@@ -151,4 +156,10 @@ body.custom-theme .container .card.horizontal {
 /* Styles for 'article-author' id */
 #article-author {
     font-style: oblique;
+}
+
+select {
+    display: block !important;
+    background-color: white; 
+    border: 1px solid black; 
 }
