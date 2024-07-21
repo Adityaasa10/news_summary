@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter News by Date</title>
+    <!-- Include your CSS files here -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav>
+        <div class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+            <a class="navbar-brand" href="/">News Summarizer</a>
+            <a href="/" class="btn waves-effect waves-light">Home</a>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 30px;">
+        <h1 class="center-align">Filter News by Date</h1>
+        <form method="POST" class="col s12">
+            <div class="row">
+                <div class="input-field col s4">
+                    <input type="date" id="date" name="date" required value="{{ selected_date or '' }}">
+                    <label for="date">Select Date</label>
+                </div>
+                <div class="input-field col s4">
+                    <select name="category" id="category">
+                        {% for cat in categories %}
+                            <option value="{{ cat }}" {% if cat == selected_category %}selected{% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="category">Category</label>
+                </div>
+                <div class="input-field col s4">
+                    <select name="sortorder" id="sortorder">
+                        <option value="desc" {% if selected_sort_order == 'desc' %}selected{% endif %}>Newest First</option>
+                        <option value="asc" {% if selected_sort_order == 'asc' %}selected{% endif %}>Oldest First</option>
+                    </select>
+                    <label for="sortorder">Sort Order</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 center-align">
+                    <button class="btn waves-effect waves-light" type="submit">Filter</button>
+                </div>
+            </div>
+        </form>
+
+        {% if data %}
+            <h2 class="center-align">Results</h2>
+            <div class="row">
+                {% for row in data %}
+                <div class="col s12">
+                    <div class="card horizontal">
+                        <div class="card-stacked">
+                            <div class="card-content">
+                                <span class="card-title">{{ row['title'] }}</span>
+                                <p class="right-align italic"><span class="formatted-date">{{ formatDateTime(row['date']) }}</span></p>
+                                <p>Category: {{ row['category'] }}</p>
+                                <p>Summary: {{ row['summarized_content'] | safe }}</p>
+                                <p>Link: <a href="{{ row['link'] }}" target="_blank">{{ row['link'] }}</a></p>
+                                <p>By {{ row['author'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% elif selected_date %}
+            <p class="center-align">No results found for the selected date.</p>
+        {% endif %}
+    </div>
+
+    <!-- Include your JS files here -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('select').formSelect();
+        });
+    </script>
+</body>
+</html>

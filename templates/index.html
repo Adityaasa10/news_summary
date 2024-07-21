@@ -3,13 +3,13 @@
 <head>
     <!-- Page title -->
     <title>News Summarizer</title>
-    
+
     <!-- CSS links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css'>
-    
+
     <!-- Google fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
@@ -28,7 +28,7 @@
 </head>
 <body>
     <!-- Navigation bar-->
-    <nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="navbar navbar-expand-lg navbar-dark bg-dark" id="navbar-container" style="background-color: #343A40">
             <!-- Brand logo and name -->
             <img src="/static/icon.png" alt="News Icon" width="40" height="40">
@@ -37,17 +37,17 @@
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav" style="background-color: #343A40;">
                 <!-- Theme control buttons -->
                 <div id="navbar-buttons" class="btn-group" role="group" aria-label="Theme Buttons">
                     <form method="get" action="/summarize">
                         <button id="summarize-button" type="submit" class="btn waves-effect waves-light">Summarize</button>
                     </form>
-                
+
                     <button id="theme-toggle" class="btn waves-effect waves-light">Toggle Theme</button>
                 </div>
-
+                <a href="{{ url_for('filter_by_date') }}" class="btn waves-effect waves-light mr-2">Filter by Date</a>
                 <!-- Search form -->
                 <form class="form-inline ml-auto" style="align-items: center;display:flex;flex-flow:initial;" method="GET" action="/search">
                     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query" required>
@@ -58,7 +58,7 @@
     </nav>
     <!-- Content -->
     <!-- Content -->
-    <div class="container" id="container">
+    <div class="container" id="container" style="margin-top: 30px;">
         <!-- Page heading -->
         <h1 id="project-title" class="center-align">AI-Powered News Summarizer</h1>
         <!-- Sort order and category selector -->
@@ -107,6 +107,6 @@
     <!-- Additional JS libraries and custom script -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script> 
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
