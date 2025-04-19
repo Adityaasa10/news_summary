@@ -24,10 +24,6 @@
         <div class="collapse navbar-collapse" id="navbarNav" style="background-color: #343A40;">
             <!-- Theme control buttons -->
             <div id="navbar-buttons" class="btn-group" role="group" aria-label="Theme Buttons">
-                <form method="get" action="/summarize">
-                    <button id="summarize-button" type="submit" class="btn waves-effect waves-light">Summarize</button>
-                </form>
-            
                 <button id="theme-toggle" class="btn waves-effect waves-light">Toggle Theme</button>
             </div>
 
@@ -38,6 +34,7 @@
             </form>
         </div>
     </div>
+
     <div class="container" id="container">
         <h1 id="project-title" class="center-align">Search Results for "{{ query }}"</h1>
         <a href="/" class="btn btn-primary" style="color: #fff;background-color: #007bff; border-color: #007bff;">Back to Home</a>
@@ -63,6 +60,7 @@
             {% endif %}
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>

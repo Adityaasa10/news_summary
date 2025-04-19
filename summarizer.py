@@ -17,6 +17,7 @@ import random
 import hashlib
 from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
+from threading import Thread
 
 # Load environment variables
 load_dotenv()
@@ -38,7 +39,6 @@ if PINECONE_INDEX not in pc.list_indexes().names():
         spec={"serverless": {"cloud": "aws", "region": "us-east-1"}}
     )
 pinecone_index = pc.Index(PINECONE_INDEX, host=PINECONE_HOST)
-
 
 # Load embedding model: sentence-transformers/all-MiniLM-L6-v2
 embedder = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
@@ -84,7 +84,7 @@ def ai_summarizer(news_info):
         print(f"Summarization failed: {e}")
         return ""
 
-def is_similar(summary, threshold=0.9):
+def is_similar(summary, threshold=0.8):
     vec = generate_embedding(summary)
     res = pinecone_index.query(vector=vec, top_k=1, include_metadata=True)
     return res.matches and res.matches[0].score > threshold
@@ -97,6 +97,7 @@ def sqlite_data(post):
     conn = sqlite3.connect('summarizer-data.db')
     cursor = conn.cursor()
     cursor.execute('''CREATE TABLE IF NOT EXISTS rss_feed
+    
                       (date TEXT, title TEXT, full_content TEXT, summarized_content TEXT, link TEXT, author TEXT, category TEXT)''')
     cursor.execute("SELECT * FROM rss_feed WHERE title = ? AND link = ?", (post['title'], post['link']))
     if not cursor.fetchone():
@@ -180,11 +181,18 @@ def get_data(sort_order, category=None, date=None):
 def format_datetime(dateTimeString):
     return datetime.fromisoformat(dateTimeString).strftime("%A, %B %d, %Y %I:%M %p")
 
-# --- Routes ---
+# --- Background News Fetching ---
+def fetch_news_periodically():
+    while True:
+        print("Fetching latest news...")
+        for url in read_opml_file():
+            parse_rss_feed(url)
+        time.sleep(600)  # Every 5 minutes
 
+# --- Routes ---
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    sort_order = request.form.get('sortorder', 'desc')
+    sort_order = 'desc'  # Hardcoded to always show newest first
     category = request.form.get('category', 'All')
     data = get_data(sort_order, category)
     categories = ['All', 'Sports', 'Entertainment', 'Politics', 'International', 'Others']
@@ -211,21 +219,22 @@ def search():
         })
     return render_template('search_results.html', query=query, results=results, formatDateTime=format_datetime)
 
-@app.route('/summarize', methods=['GET'])
-def summarize():
-    for url in read_opml_file():
-        parse_rss_feed(url)
-    return redirect("/")
-
 @app.route('/filter_by_date', methods=['GET', 'POST'])
 def filter_by_date():
-    sort_order = request.form.get('sortorder', 'desc')
+    sort_order = 'desc'  # Force newest first
     category = request.form.get('category', 'All')
     date = request.form.get('date')
     data = get_data(sort_order, category, date) if date else []
     categories = ['All', 'Sports', 'Entertainment', 'Politics', 'International', 'Others']
     return render_template('filter_by_date.html', data=data, formatDateTime=format_datetime, categories=categories, selected_category=category, selected_date=date, selected_sort_order=sort_order)
 
+def activate_fetch_thread():
+    thread = Thread(target=fetch_news_periodically)
+    thread.daemon = True
+    thread.start()
+
 if __name__ == '__main__':
+    activate_fetch_thread()  # start background fetching thread
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
+

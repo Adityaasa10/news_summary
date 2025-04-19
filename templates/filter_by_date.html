@@ -34,10 +34,8 @@
                     <label for="category">Category</label>
                 </div>
                 <div class="input-field col s4">
-                    <select name="sortorder" id="sortorder">
-                        <option value="desc" {% if selected_sort_order == 'desc' %}selected{% endif %}>Newest First</option>
-                        <option value="asc" {% if selected_sort_order == 'asc' %}selected{% endif %}>Oldest First</option>
-                    </select>
+                    <input type="hidden" name="sortorder" value="desc">
+
                     <label for="sortorder">Sort Order</label>
                 </div>
             </div>
